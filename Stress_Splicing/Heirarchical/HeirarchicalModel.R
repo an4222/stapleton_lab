@@ -94,7 +94,7 @@ calib_data$aug = ifelse(str_detect(calib_data[,4], "aug"), 1, 0)
 calib_data = calib_data[,-4]
 
 # Drop rows containing NA
-calib_data = drop_na(calib_data)
+calib_data = na.omit(calib_data)
 
 # Calculating test1 and allp zscores
 calib_data$ztest1 = (calib_data$test1 - mean(calib_data$test1))/sd(calib_data$test1)
@@ -113,9 +113,9 @@ options(scipen=999)
 
 
 # OLRM - SQ ~ Test1
-model = polr(as.factor(calib_subset$startq) ~ calib_subset$ztest1, Hess = TRUE)
+model1 = polr(as.factor(calib_subset$startq) ~ ztest1 + june + aug, data = calib_subset, Hess = TRUE)
 #(summary(model))
-(ctable <- coef(summary(model)))
+(ctable <- coef(summary(model1)))
 ## calculate and store p values
 p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
 options(scipen=999)
@@ -123,14 +123,65 @@ options(scipen=999)
 (ctable <- cbind(ctable, "p value" = p))
 
 # OLRM - SQ ~ allP
-model = polr(as.factor(calib_subset$startq) ~ calib_subset$zallP, Hess = TRUE)
+model2 = polr(as.factor(calib_subset$startq) ~ zallP + june + aug, data = calib_subset, Hess = TRUE)
 #(summary(model))
-(ctable <- coef(summary(model)))
+(ctable <- coef(summary(model2)))
 ## calculate and store p values
 p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
 options(scipen=999)
 ## combined table
 (ctable <- cbind(ctable, "p value" = p))
+
+
+
+## Ordinal Net package ##
+library("ordinalNet")
+
+#define ordinal model startq~ztest1+month
+ordmod1 = ordinalNet(as.matrix(calib_subset[,2:4]), calib_subset$startq)
+summary(ordmod1)
+coef(ordmod1, matrix=TRUE)
+#kfold cv
+set.seed(123)
+ordfit1 = ordinalNetTune(as.matrix(calib_subse[,c(2:4)]), calib_subset$startq,
+                         family = "cumulative",
+                         link = "logit", parallelTerms = TRUE, nonparallelTerms = TRUE, 
+                         warn = FALSE, printProgress = FALSE)
+head(ordfit1$loglik)
+bestLambdaIndex = which.max(rowMeans(ordfit1$loglik))
+head(coef(ordfit1$fit, matrix = TRUE, whichLambda = bestLambdaIndex))
+#interpretation???
+
+#define ordinal model starq~zallp+month
+ordmod2 = ordinalNet(as.matrix(calib_subset[,c(2,3,5)]), calib_subset$startq)
+summary(ordmod2)
+coef(ordmod2, matrix=TRUE)
+#kfold cv
+set.seed(123)
+ordfit2 = ordinalNetTune(as.matrix(calib_subset[,c(2,3,5)]), calib_subset$startq,
+                         family = "cumulative",
+                         link = "logit", parallelTerms = TRUE, nonparallelTerms = TRUE, 
+                         warn = FALSE, printProgress = FALSE)
+head(ordfit2$loglik)
+bestLambdaIndex = which.max(rowMeans(ordfit2$loglik))
+head(coef(ordfit2$fit, matrix = TRUE, whichLambda = bestLambdaIndex))
+#interpretation???
+
+#define ordinal model starq~zallP+ztest1+month
+ordmod3 = ordinalNet(as.matrix(calib_subset[,4:5]), calib_subset$startq)
+summary(ordmod3)
+coef(ordmod3, matrix=TRUE)
+#kfold cv
+set.seed(123)
+ordfit3 = ordinalNetTune(as.matrix(calib_subset[,4:5]), calib_subset$startq, family = "cumulative",
+                         link = "logit", parallelTerms = TRUE, nonparallelTerms = TRUE, 
+                         warn = FALSE, printProgress = FALSE)
+head(ordfit3$loglik)
+bestLambdaIndex = which.max(rowMeans(ordfit3$loglik))
+head(coef(ordfit3$fit, matrix = TRUE, whichLambda = bestLambdaIndex))
+#interpretation???
+
+
 
 # #### Month 1 (2018_6) CT ####
 # setwd("~/Stapleton_Lab/Stapleton_Lab/Stress_Splicing/2018_6")
