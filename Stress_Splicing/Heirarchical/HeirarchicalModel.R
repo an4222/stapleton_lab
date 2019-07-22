@@ -30,13 +30,14 @@ calib_data_11$month ='nov'
 calib_data = rbind(calib_data_6, calib_data_8, calib_data_11)
 
 # Create dummy varible columns for each month
-calib_data$june = ifelse(str_detect(calib_data[,4], "june"), 1, 0)
-calib_data$aug = ifelse(str_detect(calib_data[,4], "aug"), 1, 0)
-calib_data = calib_data[,-4]
+calib_data$june = ifelse(str_detect(calib_data[,6], "june"), 1, 0)
+calib_data$aug = ifelse(str_detect(calib_data[,6], "aug"), 1, 0)
+calib_data$nov = ifelse(str_detect(calib_data[,6], "nov"), 1, 0)
+calib_data = calib_data[,-6]
 
 # Drop rows containing NA
 calib_data = na.omit(calib_data)
-calib_subset = calib_data[,c(1, 4:7)]
+calib_subset = calib_data[,c(1, 4:8)]
 
 #graphing log starting quantity to cp values
 plot(calib_data$allP,log(calib_data$startq), col = 'red', main = "Hierarchical Log Starting Quanitty vs. Cp Values", 
