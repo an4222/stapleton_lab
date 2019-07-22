@@ -2,23 +2,25 @@
 
 library(MASS)
 library(stringr)
+## Ordinal Net package ##
+library("ordinalNet")
 
 # MONTH 1 (2018_6 / JUNE) CALIBRATED DATA FRAME 
-calib_data_6 = read.csv("../2018_6/calib_2018_6.csv")[,-1]
+calib_data_6 = na.omit(read.csv("../2018_6/calib_2018_6.csv")[,-1])
 calib_data_6$ztest1 = (calib_data_6$test1 - mean(calib_data_6$test1))/sd(calib_data_6$test1)
 calib_data_6$zallP = (calib_data_6$allP - mean(calib_data_6$allP))/sd(calib_data_6$allP)
 calib_data_6$month ='june'
 #calib_data_6
 
 # MONTH 2 (2018_8 / AUGUST) CALIBRATED DATA FRAME
-calib_data_8 = read.csv("../2018_8/calib_2018_8.csv")[,-1]
+calib_data_8 = na.omit(read.csv("../2018_8/calib_2018_8.csv")[,-1])
 calib_data_8$ztest1 = (calib_data_8$test1 - mean(calib_data_8$test1))/sd(calib_data_8$test1)
 calib_data_8$zallP = (calib_data_8$allP - mean(calib_data_8$allP))/sd(calib_data_8$allP)
 calib_data_8$month ='aug'
 #calib_data_8
 
 # MONTH 3 (2018_11 / NOVEMBER) CALIBRATED DATA FRAME
-calib_data_11 = read.csv("../2018_11/calib_2018_11.csv")[,-1]
+calib_data_11 = na.omit(read.csv("../2018_11/calib_2018_11.csv")[,-1])
 calib_data_11$ztest1 = (calib_data_11$test1 - mean(calib_data_11$test1))/sd(calib_data_11$test1)
 calib_data_11$zallP = (calib_data_11$allP - mean(calib_data_11$allP))/sd(calib_data_11$allP)
 calib_data_11$month ='nov'
@@ -34,10 +36,7 @@ calib_data = calib_data[,-4]
 
 # Drop rows containing NA
 calib_data = na.omit(calib_data)
-
-
 calib_subset = calib_data[,c(1, 4:7)]
-
 
 #graphing log starting quantity to cp values
 plot(calib_data$allP,log(calib_data$startq), col = 'red', main = "Hierarchical Log Starting Quanitty vs. Cp Values", 
@@ -112,8 +111,7 @@ options(scipen=999)
 
 
 ###### Ordinal Net models #######
-## Ordinal Net package ##
-library("ordinalNet")
+
 
 ### model 1 ###
 #define ordinal model startq~ztest1+month
@@ -165,15 +163,15 @@ head(coef(ordfit3$fit, matrix = TRUE, whichLambda = bestLambdaIndex))
 
 
 ##### building separate month models into one #####
-ordmod6 = ordinalNet(as.matrix(calib_data_6[,4:5]), calib_data_6$startq)
+ordmod6 = ordinalNet(as.matrix(calib_data_6[,4:5]), as.factor(calib_data_6$startq))
 summary(ordmod3)
 coef(ordmod3, matrix=TRUE)
 
-ordmod8 = ordinalNet(as.matrix(calib_data_8[,4:5]), calib_data_8$startq)
+ordmod8 = ordinalNet(as.matrix(calib_data_8[,4:5]), as.factor(calib_data_6$startq))
 summary(ordmod3)
 coef(ordmod3, matrix=TRUE)
 
-ordmod11 = ordinalNet(as.matrix(calib_data_11[,4:5]), calib_data_11$startq)
+ordmod11 = ordinalNet(as.matrix(calib_data_11[,4:5]), as.factor(calib_data_6$startq))
 summary(ordmod3)
 coef(ordmod3, matrix=TRUE)
 
