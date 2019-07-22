@@ -185,6 +185,16 @@ for (k in group){
 calib_data$adjval = adjval
 calib_data$adjusted_test1 = calib_data$test1 + adjval
 
+
+# plot(log(as.numeric(as.character(calib_data$startq))), calib_data$allP, col = 'blue', main = "Log Starting Quanitty vs. Cp Values", 
+#      xlab = "log(Starting Quantity)", ylab = "Cp Values")
+# abline(lm(log(as.numeric(as.character(calib_data$startq)))~calib_data$allP), col = "blue")
+# points(log(as.numeric(as.character(calib_data$startq))),calib_data$adjusted_test1, col = 'red')
+# abline(lm(log(as.numeric(as.character(calib_data$startq)))~calib_data$adjusted_test1), col = "red")
+# legend('topright', legend=c("Adjusted Test 1", "All Products"),
+#        col=c("red", "blue"), lty = 1, cex=0.8)
+
+
 ##### Finding the average adjusted test 1 #########
 
 #average function takes the mean of each 

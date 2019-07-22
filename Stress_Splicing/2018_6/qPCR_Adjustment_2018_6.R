@@ -172,44 +172,6 @@ write.csv(exp_data, file = "exp_2018_6.csv")
 ### COMPLETED EXPERIMENTAL DATA FRAME ###
 
 
-##########################################################
-############### Combination Ratios for qPCR ##############
-##########################################################
-
-startquan = as.character(calib_data$startq)
-allprod = calib_data$allP
-t1 = calib_data$test1
-dat = data.frame(cbind(startquan,allprod,t1), stringsAsFactors = FALSE)
-dat$allprod = as.numeric(dat$allprod)
-dat$t1 = as.numeric(dat$t1)
-
-#Create divide funtion - every element in column 1 divided by every element in column 2
-divide <- function(col1, col2){
- ratio = NULL;
- for (i in col1){
-   ratio = c(ratio,i/col2)
- }
- return(ratio)
-}
-#Subset data by starting quantity
-group = split.data.frame(dat, dat$startquan)
-# Calculate combination ratios at each starting quantity
-combratio = NULL;
-for (k in group){
-  combratio = cbind(combratio, divide(k$allprod, k$t1))
-}
-# Create data frame with unique ratios at each starting quantity
-startqvalues = rep(unique(startquan), rep(length(unique(startquan)),length(unique(startquan)))) 
-newratios.calib = data.frame(rbind(unique(startqvalues), combratio), stringsAsFactors = FALSE)
-# Duplicate newratios.calib data frame
-newratios.calib = as.data.frame(newratios.calib)
-colnames(newratios.calib) = c("0.01", "0.05", "0.10", "0.50", "1.00", "50.00")
-newratios.calib = newratios.calib[-1,]
-newratiosvector = as.numeric(as.vector(as.matrix.data.frame(newratios.calib)))
-startqvector = sort(rep(unique(startquan), length(newratios.calib$`0.01`)))
-newratios.calib = as.data.frame(cbind(newratiosvector, startqvector), stringsAsFactors = FALSE)
-
-#################### end combination ratios #####################
 
 ### CONFUSTION MATRIX ###
 library(caret)
