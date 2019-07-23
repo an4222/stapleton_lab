@@ -14,13 +14,12 @@ test1 = -2.7*log(stq)+23+eps.test
 
 #plot the two cp types against log starting quantity
 plot( allp,log(stq), col = 'red', main = "Log Starting Quanitty vs. Cp Values", 
-     ylab = "log(Starting Quantity)", xlab = "Cp Values" , xlim = c(15, 45), ylim = c(-6, 2))
+      ylab = "log(Starting Quantity)", xlab = "Cp Values" , xlim = c(15, 45), ylim = c(-6, 2))
 points(test1,log(stq), col = 'blue')
 abline(lm(log(stq)~allp), col = 'red')
 abline(lm(log(stq)~test1), col = 'blue')
 legend('topright', legend=c("Test 1", "All Products"),
        col=c("blue", "red"), lty = 1, cex=0.8)
-
 
 # create the data frame and include the z scores of test 1 and all p
 data = as.data.frame(cbind(stq, allp, test1))
