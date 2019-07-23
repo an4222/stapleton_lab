@@ -161,30 +161,6 @@ head(coef(ordfit3$fit, matrix = TRUE, whichLambda = bestLambdaIndex))
 
 
 
-
-
-##### building separate month models into one #####
-ordmod6 = ordinalNet(as.matrix(calib_data_6[,4:5]), as.factor(calib_data_6$startq))
-summary(ordmod3)
-coef(ordmod3, matrix=TRUE)
-
-ordmod8 = ordinalNet(as.matrix(calib_data_8[,4:5]), as.factor(calib_data_6$startq))
-summary(ordmod3)
-coef(ordmod3, matrix=TRUE)
-
-ordmod11 = ordinalNet(as.matrix(calib_data_11[,4:5]), as.factor(calib_data_6$startq))
-summary(ordmod3)
-coef(ordmod3, matrix=TRUE)
-
-
-
-
-
-
-
-
-
-
 #######################################
 ####### k-Fold Cross Validation ####### ordinalNet model
 #######################################
